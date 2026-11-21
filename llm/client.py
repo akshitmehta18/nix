@@ -1,180 +1,325 @@
+"""Modern multi-provider LLM client for Nix.
+
+Supports Groq, Google Gemini, OpenAI, Anthropic Claude, Ollama (local offline), and custom endpoints.
+"""
+
 import os
 import json
-import requests
-from llm import prompts
+import time
+from typing import Dict, List, Optional, Any, Tuple
+from config import load_global_config, save_global_config
 
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-MODEL = "llama-3.1-8b-instant"  # Fast model for simple tasks
-AGENT_MODEL = "llama-3.1-8b-instant"  # Primary model
-FALLBACK_MODEL = "llama-3.3-70b-versatile"  # Fallback model
-
-# Context window limits (leaving room for response)
-MAX_CONTEXT_TOKENS = 5000  # Safe limit for 8b model (actual is ~8k but we leave room)
-CHARS_PER_TOKEN = 4  # Rough estimate: 4 characters per token
-
+# Provider configurations
+DEFAULT_PROVIDERS = {
+    "groq": {
+        "name": "Groq",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "default_model": "llama-3.3-70b-versatile",
+        "fallback_model": "llama-3.1-8b-instant",
+        "env_var": "GROQ_API_KEY",
+        "requires_key": True,
+        "description": "Ultra-fast inference (Llama 3.3 70B & 8B)",
+        "key_url": "https://console.groq.com/keys"
+    },
+    "gemini": {
+        "name": "Google Gemini",
+        "url": "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
+        "default_model": "gemini-2.5-flash",
+        "fallback_model": "gemini-1.5-flash",
+        "env_var": "GEMINI_API_KEY",
+        "requires_key": True,
+        "description": "Google Gemini 2.5/1.5 Flash (high context & accuracy)",
+        "key_url": "https://aistudio.google.com/app/apikey"
+    },
+    "gemini_local": {
+        "name": "Gemini Web2API (Local / Free)",
+        "url": os.getenv("GEMINI_LOCAL_URL", "http://127.0.0.1:8081/v1/chat/completions"),
+        "default_model": "gemini-2.5-flash",
+        "fallback_model": "gemini-1.5-flash",
+        "env_var": "GEMINI_LOCAL_API_KEY",
+        "requires_key": False,
+        "description": "Local Gemini Web2API endpoint (/Users/akshitmehta/gemini)",
+        "key_url": "http://127.0.0.1:8081"
+    },
+    "openai": {
+        "name": "OpenAI",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "default_model": "gpt-4o-mini",
+        "fallback_model": "gpt-4o",
+        "env_var": "OPENAI_API_KEY",
+        "requires_key": True,
+        "description": "OpenAI GPT-4o & GPT-4o-mini",
+        "key_url": "https://platform.openai.com/api-keys"
+    },
+    "ollama": {
+        "name": "Ollama (Local / Free)",
+        "url": os.getenv("OLLAMA_HOST", "http://localhost:11434/v1/chat/completions"),
+        "default_model": "llama3.2",
+        "fallback_model": "llama3",
+        "env_var": "OLLAMA_API_KEY",
+        "requires_key": False,
+        "description": "100% Private, offline, free local AI (Llama 3.2, DeepSeek, etc.)",
+        "key_url": "https://ollama.com"
+    },
+    "anthropic": {
+        "name": "Anthropic Claude",
+        "url": "https://api.anthropic.com/v1/messages",
+        "default_model": "claude-3-5-sonnet-20241022",
+        "fallback_model": "claude-3-5-haiku-20241022",
+        "env_var": "ANTHROPIC_API_KEY",
+        "requires_key": True,
+        "description": "Claude 3.5 Sonnet / Haiku",
+        "key_url": "https://console.anthropic.com"
+    }
+}
 
 CREDENTIALS_FILE = os.path.expanduser("~/.nix/credentials")
+MAX_CONTEXT_TOKENS = 6000
+CHARS_PER_TOKEN = 4
 
-
-def get_api_key():
-    """Get Groq API key from environment or credentials file"""
-    # First check environment variable
-    api_key = os.getenv("GROQ_API_KEY")
-    if api_key:
-        return api_key
-
-    # Then check credentials file
-    if os.path.exists(CREDENTIALS_FILE):
-        try:
-            with open(CREDENTIALS_FILE, 'r') as f:
-                return f.read().strip()
-        except:
-            pass
-
-    return None
-
-
-def save_api_key(api_key):
-    """Save API key to credentials file"""
-    os.makedirs(os.path.dirname(CREDENTIALS_FILE), exist_ok=True)
-    with open(CREDENTIALS_FILE, 'w') as f:
-        f.write(api_key)
-    os.chmod(CREDENTIALS_FILE, 0o600)  # Only owner can read/write
-
-
-def call_groq(prompt):
-    """
-    Make API call to Groq
-    Returns: Response text from LLM
-    """
-    api_key = get_api_key()
-
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "model": MODEL,
-        "messages": [
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.3,
-        "max_tokens": 500
-    }
-
-    try:
-        response = requests.post(GROQ_API_URL, json=payload, headers=headers, timeout=30)
-        response.raise_for_status()
-
-        data = response.json()
-        return data["choices"][0]["message"]["content"]
-
-    except requests.exceptions.Timeout:
-        raise Exception("Request timed out. Please check your internet connection.")
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"API request failed: {str(e)}")
-    except KeyError:
-        raise Exception("Unexpected API response format.")
-
-
-def check_springboot(build_file_content, build_type):
-    """
-    Ask LLM if project is Spring Boot
-    Returns: (is_springboot: bool, version: str or None)
-    """
-    prompt = prompts.get_springboot_detection_prompt(build_file_content, build_type)
-
-    try:
-        response = call_groq(prompt)
-        return parse_springboot_response(response)
-    except Exception as e:
-        raise Exception(f"Failed to check Spring Boot: {str(e)}")
-
-
-def parse_springboot_response(response):
-    """
-    Parse LLM response for Spring Boot detection
-    Returns: (is_springboot: bool, version: str or None)
-    """
-    response_lower = response.lower()
-
-    # Check if it's Spring Boot
-    is_springboot = "yes" in response_lower and "spring boot" in response_lower
-
-    if not is_springboot:
-        return False, None
-
-    # Try to extract version
-    # Look for patterns like "3.2.0", "2.7.5", etc.
-    import re
-    version_pattern = r'\b\d+\.\d+\.\d+\b'
-    matches = re.findall(version_pattern, response)
-
-    version = matches[0] if matches else "Unknown"
-
-    return True, version
+# Backwards compatibility constants
+GROQ_API_URL = DEFAULT_PROVIDERS["groq"]["url"]
+MODEL = DEFAULT_PROVIDERS["groq"]["fallback_model"]
+AGENT_MODEL = DEFAULT_PROVIDERS["groq"]["default_model"]
+FALLBACK_MODEL = DEFAULT_PROVIDERS["groq"]["fallback_model"]
 
 
 class RateLimitExhaustedError(Exception):
-    """Raised when Groq API daily quota is exhausted for all models"""
+    """Raised when LLM API quota or rate limit is exhausted."""
     pass
 
 
 class ContextTooLargeError(Exception):
-    """Raised when context exceeds model limits"""
+    """Raised when context exceeds model limits."""
     pass
 
 
-def estimate_tokens(text):
-    """Estimate token count from text (rough approximation)."""
+def get_stored_config() -> dict:
+    """Load global nix configuration."""
+    cfg = load_global_config()
+    if not isinstance(cfg, dict):
+        cfg = {}
+    return cfg
+
+
+def get_active_provider() -> str:
+    """Determine the active LLM provider."""
+    # Check explicit env var
+    env_provider = os.getenv("NIX_PROVIDER")
+    if env_provider and env_provider.lower() in DEFAULT_PROVIDERS:
+        return env_provider.lower()
+
+    # Check stored config
+    cfg = get_stored_config()
+    if "provider" in cfg and cfg["provider"] in DEFAULT_PROVIDERS:
+        return cfg["provider"]
+
+    # Auto-detect from available API keys
+    for prov_name, prov in DEFAULT_PROVIDERS.items():
+        if prov["requires_key"] and os.getenv(prov["env_var"]):
+            return prov_name
+
+    # Auto-detect active local services (Gemini Web2API on 8081 or Ollama on 11434)
+    import socket
+    def _is_local_port_open(port: int) -> bool:
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(0.15)
+                return s.connect_ex(("127.0.0.1", port)) == 0
+        except Exception:
+            return False
+
+    if _is_local_port_open(8081):
+        return "gemini_local"
+
+    if _is_local_port_open(11434):
+        return "ollama"
+
+    # Check legacy credentials file -> defaults to groq
+    if os.path.exists(CREDENTIALS_FILE):
+        return "groq"
+
+    # Default to groq
+    return "groq"
+
+
+def set_active_provider(provider: str, model: Optional[str] = None):
+    """Set active LLM provider and optional default model."""
+    if provider not in DEFAULT_PROVIDERS:
+        raise ValueError(f"Unknown provider '{provider}'. Available: {list(DEFAULT_PROVIDERS.keys())}")
+    cfg = get_stored_config()
+    cfg["provider"] = provider
+    if model:
+        cfg[f"{provider}_model"] = model
+    save_global_config(cfg)
+
+
+def get_api_key(provider: Optional[str] = None) -> Optional[str]:
+    """Get API key for specified provider or active provider."""
+    prov_name = provider or get_active_provider()
+    prov_info = DEFAULT_PROVIDERS.get(prov_name, DEFAULT_PROVIDERS["groq"])
+
+    # 1. Check environment variable
+    env_key = os.getenv(prov_info.get("env_var", ""))
+    if env_key:
+        return env_key.strip()
+
+    # 2. Check stored config in ~/.nix/config.json
+    cfg = get_stored_config()
+    keys_map = cfg.get("api_keys", {})
+    if prov_name in keys_map and keys_map[prov_name]:
+        return keys_map[prov_name].strip()
+
+    # 3. For Groq, check legacy ~/.nix/credentials
+    if prov_name == "groq" and os.path.exists(CREDENTIALS_FILE):
+        try:
+            with open(CREDENTIALS_FILE, 'r') as f:
+                key = f.read().strip()
+                if key:
+                    return key
+        except Exception:
+            pass
+
+    # 4. Ollama doesn't require a key
+    if prov_name == "ollama":
+        return "ollama-local"
+
+    return None
+
+
+def save_api_key(api_key: str, provider: str = "groq"):
+    """Save API key for a provider."""
+    provider = provider.lower()
+    cfg = get_stored_config()
+    if "api_keys" not in cfg:
+        cfg["api_keys"] = {}
+    cfg["api_keys"][provider] = api_key.strip()
+    cfg["provider"] = provider
+    save_global_config(cfg)
+
+    # Legacy file sync for groq
+    if provider == "groq":
+        try:
+            os.makedirs(os.path.dirname(CREDENTIALS_FILE), exist_ok=True)
+            with open(CREDENTIALS_FILE, 'w') as f:
+                f.write(api_key.strip())
+            os.chmod(CREDENTIALS_FILE, 0o600)
+        except Exception:
+            pass
+
+
+def get_active_model(provider: Optional[str] = None, use_fallback: bool = False) -> str:
+    """Get active model for provider."""
+    prov_name = provider or get_active_provider()
+    prov_info = DEFAULT_PROVIDERS.get(prov_name, DEFAULT_PROVIDERS["groq"])
+
+    if use_fallback:
+        return prov_info.get("fallback_model", prov_info["default_model"])
+
+    cfg = get_stored_config()
+    custom_model = cfg.get(f"{prov_name}_model")
+    if custom_model:
+        return custom_model
+
+    return prov_info["default_model"]
+
+
+def _make_http_request(url: str, headers: dict, payload: dict, timeout: int = 60) -> dict:
+    """Make HTTP POST request using requests, falling back to httpx or urllib."""
+    json_data = json.dumps(payload).encode('utf-8')
+
+    # Try requests
+    try:
+        import requests
+        resp = requests.post(url, json=payload, headers=headers, timeout=timeout)
+        if resp.status_code == 429:
+            raise RateLimitExhaustedError("Rate limit / quota exceeded (HTTP 429).")
+        if resp.status_code >= 400:
+            try:
+                err_json = resp.json()
+                msg = err_json.get("error", {}).get("message", resp.text)
+            except Exception:
+                msg = resp.text
+            raise Exception(f"API Error ({resp.status_code}): {msg}")
+        return resp.json()
+    except ImportError:
+        pass
+
+    # Try httpx
+    try:
+        import httpx
+        resp = httpx.post(url, json=payload, headers=headers, timeout=timeout)
+        if resp.status_code == 429:
+            raise RateLimitExhaustedError("Rate limit / quota exceeded (HTTP 429).")
+        if resp.status_code >= 400:
+            raise Exception(f"API Error ({resp.status_code}): {resp.text}")
+        return resp.json()
+    except ImportError:
+        pass
+
+    # Fallback to standard library urllib.request
+    import urllib.request
+    import urllib.error
+
+    req = urllib.request.Request(url, data=json_data, headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            return json.loads(response.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        if e.code == 429:
+            raise RateLimitExhaustedError("Rate limit / quota exceeded (HTTP 429).")
+        err_body = e.read().decode('utf-8', errors='ignore')
+        try:
+            err_json = json.loads(err_body)
+            msg = err_json.get("error", {}).get("message", err_body)
+        except Exception:
+            msg = err_body
+        raise Exception(f"API Error ({e.code}): {msg}")
+    except urllib.error.URLError as e:
+        raise Exception(f"Network error: {str(e.reason)}")
+
+
+def estimate_tokens(text: Any) -> int:
+    """Estimate token count from text."""
     if not text:
         return 0
     return len(str(text)) // CHARS_PER_TOKEN
 
 
-def estimate_messages_tokens(messages):
+def estimate_messages_tokens(messages: List[dict]) -> int:
     """Estimate total tokens in messages."""
     total = 0
     for msg in messages:
         total += estimate_tokens(msg.get("content", ""))
-        # Tool calls add extra tokens
         if msg.get("tool_calls"):
             total += estimate_tokens(json.dumps(msg["tool_calls"]))
     return total
 
 
-def estimate_tools_tokens(tools):
+def estimate_tools_tokens(tools: Optional[List[dict]]) -> int:
     """Estimate tokens in tool definitions."""
     if not tools:
         return 0
     return estimate_tokens(json.dumps(tools))
 
 
-def trim_messages_to_fit(messages, tools, max_tokens=MAX_CONTEXT_TOKENS):
-    """
-    Trim messages to fit within token limit.
-    Keeps system prompt and most recent messages.
-    """
+def trim_messages_to_fit(messages: List[dict], tools: Optional[List[dict]], max_tokens: int = MAX_CONTEXT_TOKENS) -> List[dict]:
+    """Trim messages to fit within token limits while preserving system instructions."""
     tools_tokens = estimate_tools_tokens(tools)
-    available_tokens = max_tokens - tools_tokens - 500  # Reserve 500 for response
+    available = max_tokens - tools_tokens - 600
 
-    if available_tokens < 1000:
-        # Tools taking too much space, reduce them
-        available_tokens = 1000
+    if available < 1200:
+        available = 1200
 
-    # Always keep system prompt
     if not messages:
         return messages
 
     system_prompt = messages[0] if messages[0].get("role") == "system" else None
     other_messages = messages[1:] if system_prompt else messages[:]
 
-    # Estimate system prompt tokens
     system_tokens = estimate_tokens(system_prompt.get("content", "")) if system_prompt else 0
-    remaining_tokens = available_tokens - system_tokens
+    remaining = available - system_tokens
 
-    # Build trimmed messages from most recent
     trimmed = []
     current_tokens = 0
 
@@ -183,63 +328,93 @@ def trim_messages_to_fit(messages, tools, max_tokens=MAX_CONTEXT_TOKENS):
         if msg.get("tool_calls"):
             msg_tokens += estimate_tokens(json.dumps(msg["tool_calls"]))
 
-        if current_tokens + msg_tokens <= remaining_tokens:
+        if current_tokens + msg_tokens <= remaining:
             trimmed.insert(0, msg)
             current_tokens += msg_tokens
         else:
-            # Try to truncate this message's content
-            if msg.get("role") == "tool" and msg_tokens > 500:
-                # Truncate tool result
-                content = msg.get("content", "")
-                max_content_chars = (remaining_tokens - current_tokens) * CHARS_PER_TOKEN
-                if max_content_chars > 200:
-                    truncated_msg = msg.copy()
-                    truncated_msg["content"] = content[:int(max_content_chars)] + "...(truncated)"
-                    trimmed.insert(0, truncated_msg)
+            if msg.get("role") == "tool" and msg_tokens > 400:
+                content = str(msg.get("content", ""))
+                max_chars = int((remaining - current_tokens) * CHARS_PER_TOKEN)
+                if max_chars > 200:
+                    truncated = msg.copy()
+                    truncated["content"] = content[:max_chars] + "...[truncated]"
+                    trimmed.insert(0, truncated)
             break
 
-    # Reconstruct with system prompt
     if system_prompt:
         return [system_prompt] + trimmed
     return trimmed
 
 
-def call_groq_with_tools(messages, tools=None, retry_count=0, use_fallback=False):
-    """
-    Make API call to Groq with function calling support.
+def call_llm(prompt: str, provider: Optional[str] = None) -> str:
+    """Execute single prompt call to active or specified LLM."""
+    prov_name = provider or get_active_provider()
+    api_key = get_api_key(prov_name)
 
-    Args:
-        messages: List of message dicts with role and content
-        tools: List of tool definitions (OpenAI function calling format)
-        retry_count: Internal retry counter
-        use_fallback: Whether to use fallback model
+    prov_info = DEFAULT_PROVIDERS.get(prov_name, DEFAULT_PROVIDERS["groq"])
+    if prov_info["requires_key"] and not api_key:
+        raise Exception(f"No API key configured for {prov_info['name']}. Run: nix config <key> or nix config --provider {prov_name} <key>")
 
-    Returns:
-        dict with:
-            - content: Text response (if no tool call)
-            - tool_calls: List of tool calls (if LLM wants to use tools)
-            - finish_reason: Why the response ended
-    """
-    import time
-
-    api_key = get_api_key()
-    current_model = FALLBACK_MODEL if use_fallback else AGENT_MODEL
-
-    # Pre-flight check: estimate tokens and trim if needed
-    estimated_tokens = estimate_messages_tokens(messages) + estimate_tools_tokens(tools)
-    if estimated_tokens > MAX_CONTEXT_TOKENS:
-        messages = trim_messages_to_fit(messages, tools, MAX_CONTEXT_TOKENS)
+    url = prov_info["url"]
+    model = get_active_model(prov_name)
 
     headers = {
-        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
+    if api_key and prov_name != "ollama":
+        headers["Authorization"] = f"Bearer {api_key}"
+
+    payload = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.2,
+        "max_tokens": 1000
+    }
+
+    data = _make_http_request(url, headers, payload, timeout=45)
+    return data["choices"][0]["message"]["content"]
+
+
+def call_groq(prompt: str) -> str:
+    """Backwards-compatible alias for call_llm."""
+    return call_llm(prompt)
+
+
+def call_llm_with_tools(
+    messages: List[dict],
+    tools: Optional[List[dict]] = None,
+    retry_count: int = 0,
+    use_fallback: bool = False,
+    provider: Optional[str] = None
+) -> dict:
+    """Execute chat completion with function calling across supported LLM providers."""
+    prov_name = provider or get_active_provider()
+    prov_info = DEFAULT_PROVIDERS.get(prov_name, DEFAULT_PROVIDERS["groq"])
+    api_key = get_api_key(prov_name)
+
+    if prov_info["requires_key"] and not api_key:
+        raise Exception(
+            f"API key not configured for {prov_info['name']}.\n"
+            f"Run: nix config <key> or visit {prov_info['key_url']} for a free key."
+        )
+
+    current_model = get_active_model(prov_name, use_fallback=use_fallback)
+    url = prov_info["url"]
+
+    # Pre-flight context trimming
+    estimated = estimate_messages_tokens(messages) + estimate_tools_tokens(tools)
+    if estimated > MAX_CONTEXT_TOKENS:
+        messages = trim_messages_to_fit(messages, tools, MAX_CONTEXT_TOKENS)
+
+    headers = {"Content-Type": "application/json"}
+    if api_key and prov_name != "ollama":
+        headers["Authorization"] = f"Bearer {api_key}"
 
     payload = {
         "model": current_model,
         "messages": messages,
-        "temperature": 0.3,
-        "max_tokens": 1024
+        "temperature": 0.2,
+        "max_tokens": 1500
     }
 
     if tools:
@@ -247,47 +422,7 @@ def call_groq_with_tools(messages, tools=None, retry_count=0, use_fallback=False
         payload["tool_choice"] = "auto"
 
     try:
-        response = requests.post(GROQ_API_URL, json=payload, headers=headers, timeout=60)
-
-        # Handle rate limiting (silently retry, then fail gracefully)
-        if response.status_code == 429:
-            # Try quick retry first (2 retries max, shorter wait)
-            if retry_count < 2:
-                wait_time = 0.5 * (retry_count + 1)  # 0.5s, 1s
-                time.sleep(wait_time)
-                return call_groq_with_tools(messages, tools, retry_count + 1, use_fallback)
-
-            # If primary model exhausted, try fallback model
-            if not use_fallback:
-                return call_groq_with_tools(messages, tools, retry_count=0, use_fallback=True)
-
-            # Both models exhausted
-            raise RateLimitExhaustedError(
-                "Groq API usage limit reached. Your daily token quota is exhausted.\n"
-                "Wait for your quota to reset or check usage at https://console.groq.com"
-            )
-
-        # Check for other errors and show details
-        if response.status_code >= 400:
-            try:
-                error_data = response.json()
-                error_msg = error_data.get("error", {}).get("message", response.text)
-            except:
-                error_msg = response.text
-
-            # Handle context length errors specially
-            if "context" in error_msg.lower() or "token" in error_msg.lower():
-                # Try with more aggressive trimming
-                if retry_count < 1:
-                    trimmed_messages = trim_messages_to_fit(messages, tools, MAX_CONTEXT_TOKENS // 2)
-                    return call_groq_with_tools(trimmed_messages, tools, retry_count + 1, use_fallback)
-                raise ContextTooLargeError(
-                    "Context too large even after trimming. Try a simpler question or start a new conversation."
-                )
-
-            raise Exception(f"API error ({response.status_code}): {error_msg}")
-
-        data = response.json()
+        data = _make_http_request(url, headers, payload, timeout=60)
         choice = data["choices"][0]
         message = choice["message"]
 
@@ -300,22 +435,67 @@ def call_groq_with_tools(messages, tools=None, retry_count=0, use_fallback=False
         if message.get("tool_calls"):
             result["tool_calls"] = []
             for tc in message["tool_calls"]:
-                tool_call = {
+                try:
+                    args = json.loads(tc["function"]["arguments"])
+                except Exception:
+                    args = {}
+                result["tool_calls"].append({
                     "id": tc["id"],
                     "name": tc["function"]["name"],
-                    "arguments": json.loads(tc["function"]["arguments"])
-                }
-                result["tool_calls"].append(tool_call)
+                    "arguments": args
+                })
 
         return result
 
     except RateLimitExhaustedError:
-        raise  # Re-raise our custom error
-    except requests.exceptions.Timeout:
-        raise Exception("Request timed out. Please check your internet connection.")
-    except requests.exceptions.RequestException as e:
-        raise Exception(f"API request failed: {str(e)}")
-    except json.JSONDecodeError as e:
-        raise Exception(f"Failed to parse tool arguments: {str(e)}")
-    except KeyError as e:
-        raise Exception(f"Unexpected API response format: {str(e)}")
+        if retry_count < 2:
+            time.sleep(1.0 * (retry_count + 1))
+            return call_llm_with_tools(messages, tools, retry_count + 1, use_fallback, provider)
+        if not use_fallback:
+            return call_llm_with_tools(messages, tools, 0, use_fallback=True, provider=provider)
+        raise RateLimitExhaustedError(
+            f"Quota or rate limit reached for {prov_info['name']} ({current_model}).\n"
+            f"Check your quota or switch provider with: nix config --provider <gemini|openai|ollama>"
+        )
+
+    except Exception as e:
+        err_msg = str(e)
+        if "context" in err_msg.lower() or "token" in err_msg.lower():
+            if retry_count < 1:
+                trimmed = trim_messages_to_fit(messages, tools, MAX_CONTEXT_TOKENS // 2)
+                return call_llm_with_tools(trimmed, tools, retry_count + 1, use_fallback, provider)
+            raise ContextTooLargeError("Context too large. Please start a fresh conversation with 'new'.")
+        raise
+
+
+def call_groq_with_tools(messages, tools=None, retry_count=0, use_fallback=False):
+    """Backwards-compatible wrapper for call_llm_with_tools."""
+    return call_llm_with_tools(messages, tools, retry_count, use_fallback)
+
+
+def check_springboot(build_file_content: str, build_type: str) -> Tuple[bool, Optional[str]]:
+    """Determine if build file belongs to a Spring Boot project."""
+    from llm import prompts
+    prompt = prompts.get_springboot_detection_prompt(build_file_content, build_type)
+
+    try:
+        response = call_llm(prompt)
+        return parse_springboot_response(response)
+    except Exception as e:
+        raise Exception(f"Failed to check Spring Boot: {str(e)}")
+
+
+def parse_springboot_response(response: str) -> Tuple[bool, Optional[str]]:
+    """Parse LLM response to extract Spring Boot detection and version."""
+    import re
+    resp_lower = response.lower()
+    is_sb = ("yes" in resp_lower and "spring" in resp_lower) or "spring-boot" in resp_lower
+
+    if not is_sb:
+        return False, None
+
+    version_pattern = r'\b\d+\.\d+\.\d+\b'
+    matches = re.findall(version_pattern, response)
+    version = matches[0] if matches else "Unknown"
+
+    return True, version

@@ -303,8 +303,12 @@ class Agent:
                 })
                 return error_msg
             except Exception as e:
-                from utils.output import print_error_ascii
                 error_str = str(e)
+                # Check if it's an API key or connectivity error that local tools can fulfill
+                if "API key not configured" in error_str or "API error" in error_str or "quota" in error_str.lower() or "timed out" in error_str.lower() or "connection" in error_str.lower():
+                    return self._handle_local_fallback(user_input, error_str)
+
+                from utils.output import print_error_ascii
                 # Provide more helpful error messages for common issues
                 if "API error" in error_str:
                     print_error_ascii("API Error")
@@ -319,6 +323,7 @@ class Agent:
                     print_error_ascii("Error")
                     error_msg = f"An error occurred: {error_str}"
                 return error_msg
+                return error_msg
 
         # Max iterations reached
         msg = "I've done multiple analysis steps. Here's what I found based on the results above."
@@ -327,6 +332,65 @@ class Agent:
             "content": msg
         })
         return msg
+
+    def _handle_local_fallback(self, user_input, error_str):
+        """Perform deterministic local static analysis when LLM API is unavailable."""
+        q = user_input.lower()
+        from core.tools_registry import execute_tool
+        from tools import register_all_tools
+        register_all_tools()
+
+        matched_tool = None
+        tool_args = {}
+
+        if any(w in q for w in ["endpoint", "api", "route", "controller", "get", "post"]):
+            matched_tool = "analyze_endpoints"
+        elif any(w in q for w in ["bean", "wiring", "inject", "component", "service"]):
+            matched_tool = "analyze_beans"
+        elif any(w in q for w in ["issue", "bug", "problem", "defect", "error"]):
+            matched_tool = "find_issues"
+        elif any(w in q for w in ["dependenc", "pom", "gradle", "version", "jar"]):
+            matched_tool = "analyze_dependencies"
+        elif any(w in q for w in ["entit", "jpa", "database", "table", "model"]):
+            matched_tool = "analyze_entities"
+        elif any(w in q for w in ["security", "vulnerab", "secret", "csrf"]):
+            matched_tool = "check_security"
+        elif any(w in q for w in ["null", "npe", "pointer"]):
+            matched_tool = "check_null_safety"
+        elif any(w in q for w in ["diagnos", "exception", "trace", "stack"]):
+            matched_tool = "diagnose_error"
+            tool_args = {"error_message": user_input}
+        elif any(w in q for w in ["all", "everything", "overview", "structure"]):
+            matched_tool = "full_analysis"
+
+        if matched_tool:
+            result = execute_tool(matched_tool, tool_args)
+            if isinstance(result, dict):
+                summary = result.get("summary") or json.dumps(result, indent=2)
+            else:
+                summary = str(result)
+
+            first_line_err = error_str.splitlines()[0] if error_str else "API key not configured"
+            note = (
+                f"\n\n⚙️  [Local Static Analysis Mode]\n"
+                f"   Notice: {first_line_err}\n"
+                f"   To enable conversational reasoning, run: nix config <your_api_key>\n"
+                f"   Or use free local Ollama: nix config --provider ollama"
+            )
+            return summary + note
+
+        first_line_err = error_str.splitlines()[0] if error_str else "API key not configured"
+        return (
+            f"⚙️  [Local Mode Active] Notice: {first_line_err}\n\n"
+            f"You can query your Spring Boot project directly:\n"
+            f"  - 'analyze endpoints' -> Discover REST APIs\n"
+            f"  - 'analyze beans' -> Check Spring beans & wiring\n"
+            f"  - 'find issues' -> Scan for bugs, NPEs, and security risks\n"
+            f"  - 'analyze dependencies' -> Check Maven/Gradle packages\n"
+            f"  - Or run 'nix app' to open the interactive visual dashboard!\n\n"
+            f"Configure an AI key anytime with: nix config <key>\n"
+            f"Or connect local Ollama: nix config --provider ollama"
+        )
 
     def _process_tool_calls(self, tool_calls, previous_calls):
         """Process tool calls and return results."""

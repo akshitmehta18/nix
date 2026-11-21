@@ -1,0 +1,1211 @@
+[
+  {
+    "name": "DemoStoreApplication",
+    "fqn": "com.example.store.DemoStoreApplication",
+    "type": "class",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/DemoStoreApplication.java",
+    "start_line": 6,
+    "end_line": 11,
+    "annotations": [
+      "@SpringBootApplication"
+    ],
+    "methods": [
+      {
+        "name": "main",
+        "fqn": "com.example.store.DemoStoreApplication.main",
+        "class_name": "DemoStoreApplication",
+        "class_fqn": "com.example.store.DemoStoreApplication",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/DemoStoreApplication.java",
+        "start_line": 8,
+        "end_line": 10,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String[]",
+            "name": "args"
+          }
+        ],
+        "return_type": "void",
+        "calls": [
+          "SpringApplication"
+        ]
+      }
+    ],
+    "fields": [],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "CustomerRepository",
+    "fqn": "com.example.store.repository.CustomerRepository",
+    "type": "interface",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/repository/CustomerRepository.java",
+    "start_line": 8,
+    "end_line": 11,
+    "annotations": [
+      "@Repository"
+    ],
+    "methods": [
+      {
+        "name": "findByEmail",
+        "fqn": "com.example.store.repository.CustomerRepository.findByEmail",
+        "class_name": "CustomerRepository",
+        "class_fqn": "com.example.store.repository.CustomerRepository",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/repository/CustomerRepository.java",
+        "start_line": 10,
+        "end_line": 10,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "email"
+          }
+        ],
+        "return_type": "Optional<Customer>",
+        "calls": []
+      }
+    ],
+    "fields": [],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "ProductRepository",
+    "fqn": "com.example.store.repository.ProductRepository",
+    "type": "interface",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/repository/ProductRepository.java",
+    "start_line": 8,
+    "end_line": 11,
+    "annotations": [
+      "@Repository"
+    ],
+    "methods": [
+      {
+        "name": "findByCategory",
+        "fqn": "com.example.store.repository.ProductRepository.findByCategory",
+        "class_name": "ProductRepository",
+        "class_fqn": "com.example.store.repository.ProductRepository",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/repository/ProductRepository.java",
+        "start_line": 10,
+        "end_line": 10,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "category"
+          }
+        ],
+        "return_type": "List<Product>",
+        "calls": []
+      }
+    ],
+    "fields": [],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "ProductController",
+    "fqn": "com.example.store.controller.ProductController",
+    "type": "class",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+    "start_line": 11,
+    "end_line": 54,
+    "annotations": [
+      "@RequestMapping",
+      "@RestController",
+      "@Autowired",
+      "@GetMapping",
+      "@PathVariable",
+      "@PostMapping",
+      "@RequestBody",
+      "@PutMapping",
+      "@RequestParam",
+      "@DeleteMapping"
+    ],
+    "methods": [
+      {
+        "name": "ProductController",
+        "fqn": "com.example.store.controller.ProductController.ProductController",
+        "class_name": "ProductController",
+        "class_fqn": "com.example.store.controller.ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "start_line": 17,
+        "end_line": 20,
+        "is_constructor": true,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "ProductService",
+            "name": "productService"
+          }
+        ],
+        "return_type": null,
+        "calls": []
+      },
+      {
+        "name": "listProducts",
+        "fqn": "com.example.store.controller.ProductController.listProducts",
+        "class_name": "ProductController",
+        "class_fqn": "com.example.store.controller.ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "start_line": 22,
+        "end_line": 25,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "List<Product>",
+        "calls": [
+          "productService"
+        ]
+      },
+      {
+        "name": "getProduct",
+        "fqn": "com.example.store.controller.ProductController.getProduct",
+        "class_name": "ProductController",
+        "class_fqn": "com.example.store.controller.ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "start_line": 27,
+        "end_line": 32,
+        "is_constructor": false,
+        "annotations": [
+          "@GetMapping"
+        ],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "PathVariable"
+          }
+        ],
+        "return_type": "ResponseEntity<Product>",
+        "calls": [
+          "orElse",
+          "map",
+          "productService",
+          "build",
+          "ResponseEntity"
+        ]
+      },
+      {
+        "name": "byCategory",
+        "fqn": "com.example.store.controller.ProductController.byCategory",
+        "class_name": "ProductController",
+        "class_fqn": "com.example.store.controller.ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "start_line": 34,
+        "end_line": 37,
+        "is_constructor": false,
+        "annotations": [
+          "@GetMapping"
+        ],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "PathVariable"
+          }
+        ],
+        "return_type": "List<Product>",
+        "calls": [
+          "productService"
+        ]
+      },
+      {
+        "name": "createProduct",
+        "fqn": "com.example.store.controller.ProductController.createProduct",
+        "class_name": "ProductController",
+        "class_fqn": "com.example.store.controller.ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "start_line": 39,
+        "end_line": 42,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Product",
+            "name": "RequestBody"
+          }
+        ],
+        "return_type": "Product",
+        "calls": [
+          "productService"
+        ]
+      },
+      {
+        "name": "updateStock",
+        "fqn": "com.example.store.controller.ProductController.updateStock",
+        "class_name": "ProductController",
+        "class_fqn": "com.example.store.controller.ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "start_line": 44,
+        "end_line": 47,
+        "is_constructor": false,
+        "annotations": [
+          "@PutMapping"
+        ],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "PathVariable"
+          },
+          {
+            "type": "int",
+            "name": "RequestParam"
+          }
+        ],
+        "return_type": "Product",
+        "calls": [
+          "productService"
+        ]
+      },
+      {
+        "name": "deleteProduct",
+        "fqn": "com.example.store.controller.ProductController.deleteProduct",
+        "class_name": "ProductController",
+        "class_fqn": "com.example.store.controller.ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "start_line": 49,
+        "end_line": 53,
+        "is_constructor": false,
+        "annotations": [
+          "@DeleteMapping"
+        ],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "PathVariable"
+          }
+        ],
+        "return_type": "ResponseEntity<Void>",
+        "calls": [
+          "productService",
+          "build",
+          "ResponseEntity"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "productService",
+        "type": "ProductService",
+        "class_name": "ProductController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java",
+        "line": 15,
+        "annotations": []
+      }
+    ],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "CustomerController",
+    "fqn": "com.example.store.controller.CustomerController",
+    "type": "class",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java",
+    "start_line": 11,
+    "end_line": 44,
+    "annotations": [
+      "@RequestMapping",
+      "@RestController",
+      "@Autowired",
+      "@GetMapping",
+      "@PathVariable",
+      "@PostMapping",
+      "@RequestBody",
+      "@DeleteMapping"
+    ],
+    "methods": [
+      {
+        "name": "CustomerController",
+        "fqn": "com.example.store.controller.CustomerController.CustomerController",
+        "class_name": "CustomerController",
+        "class_fqn": "com.example.store.controller.CustomerController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java",
+        "start_line": 17,
+        "end_line": 20,
+        "is_constructor": true,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "CustomerService",
+            "name": "customerService"
+          }
+        ],
+        "return_type": null,
+        "calls": []
+      },
+      {
+        "name": "getAll",
+        "fqn": "com.example.store.controller.CustomerController.getAll",
+        "class_name": "CustomerController",
+        "class_fqn": "com.example.store.controller.CustomerController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java",
+        "start_line": 22,
+        "end_line": 25,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "List<Customer>",
+        "calls": [
+          "customerService"
+        ]
+      },
+      {
+        "name": "getById",
+        "fqn": "com.example.store.controller.CustomerController.getById",
+        "class_name": "CustomerController",
+        "class_fqn": "com.example.store.controller.CustomerController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java",
+        "start_line": 27,
+        "end_line": 32,
+        "is_constructor": false,
+        "annotations": [
+          "@GetMapping"
+        ],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "PathVariable"
+          }
+        ],
+        "return_type": "ResponseEntity<Customer>",
+        "calls": [
+          "orElse",
+          "map",
+          "customerService",
+          "build",
+          "ResponseEntity"
+        ]
+      },
+      {
+        "name": "register",
+        "fqn": "com.example.store.controller.CustomerController.register",
+        "class_name": "CustomerController",
+        "class_fqn": "com.example.store.controller.CustomerController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java",
+        "start_line": 34,
+        "end_line": 37,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Customer",
+            "name": "RequestBody"
+          }
+        ],
+        "return_type": "Customer",
+        "calls": [
+          "customerService"
+        ]
+      },
+      {
+        "name": "remove",
+        "fqn": "com.example.store.controller.CustomerController.remove",
+        "class_name": "CustomerController",
+        "class_fqn": "com.example.store.controller.CustomerController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java",
+        "start_line": 39,
+        "end_line": 43,
+        "is_constructor": false,
+        "annotations": [
+          "@DeleteMapping"
+        ],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "PathVariable"
+          }
+        ],
+        "return_type": "ResponseEntity<Void>",
+        "calls": [
+          "customerService",
+          "build",
+          "ResponseEntity"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "customerService",
+        "type": "CustomerService",
+        "class_name": "CustomerController",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java",
+        "line": 15,
+        "annotations": []
+      }
+    ],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "Product",
+    "fqn": "com.example.store.model.Product",
+    "type": "class",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+    "start_line": 9,
+    "end_line": 45,
+    "annotations": [
+      "@Table",
+      "@Entity",
+      "@Id",
+      "@GeneratedValue"
+    ],
+    "methods": [
+      {
+        "name": "Product",
+        "fqn": "com.example.store.model.Product.Product",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 22,
+        "end_line": 22,
+        "is_constructor": true,
+        "annotations": [],
+        "parameters": [],
+        "return_type": null,
+        "calls": []
+      },
+      {
+        "name": "Product",
+        "fqn": "com.example.store.model.Product.Product",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 24,
+        "end_line": 29,
+        "is_constructor": true,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "name"
+          },
+          {
+            "type": "Double",
+            "name": "price"
+          },
+          {
+            "type": "String",
+            "name": "category"
+          },
+          {
+            "type": "Integer",
+            "name": "stock"
+          }
+        ],
+        "return_type": null,
+        "calls": []
+      },
+      {
+        "name": "getId",
+        "fqn": "com.example.store.model.Product.getId",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 31,
+        "end_line": 31,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "Long",
+        "calls": []
+      },
+      {
+        "name": "setId",
+        "fqn": "com.example.store.model.Product.setId",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 32,
+        "end_line": 32,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "id"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      },
+      {
+        "name": "getName",
+        "fqn": "com.example.store.model.Product.getName",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 34,
+        "end_line": 34,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "String",
+        "calls": []
+      },
+      {
+        "name": "setName",
+        "fqn": "com.example.store.model.Product.setName",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 35,
+        "end_line": 35,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "name"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      },
+      {
+        "name": "getPrice",
+        "fqn": "com.example.store.model.Product.getPrice",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 37,
+        "end_line": 37,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "Double",
+        "calls": []
+      },
+      {
+        "name": "setPrice",
+        "fqn": "com.example.store.model.Product.setPrice",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 38,
+        "end_line": 38,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Double",
+            "name": "price"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      },
+      {
+        "name": "getCategory",
+        "fqn": "com.example.store.model.Product.getCategory",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 40,
+        "end_line": 40,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "String",
+        "calls": []
+      },
+      {
+        "name": "setCategory",
+        "fqn": "com.example.store.model.Product.setCategory",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 41,
+        "end_line": 41,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "category"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      },
+      {
+        "name": "getStock",
+        "fqn": "com.example.store.model.Product.getStock",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 43,
+        "end_line": 43,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "Integer",
+        "calls": []
+      },
+      {
+        "name": "setStock",
+        "fqn": "com.example.store.model.Product.setStock",
+        "class_name": "Product",
+        "class_fqn": "com.example.store.model.Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "start_line": 44,
+        "end_line": 44,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Integer",
+            "name": "stock"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      }
+    ],
+    "fields": [
+      {
+        "name": "id",
+        "type": "Long",
+        "class_name": "Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "line": 13,
+        "annotations": [
+          "@GeneratedValue"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "class_name": "Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "line": 17,
+        "annotations": []
+      },
+      {
+        "name": "price",
+        "type": "Double",
+        "class_name": "Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "line": 18,
+        "annotations": []
+      },
+      {
+        "name": "category",
+        "type": "String",
+        "class_name": "Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "line": 19,
+        "annotations": []
+      },
+      {
+        "name": "stock",
+        "type": "Integer",
+        "class_name": "Product",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java",
+        "line": 20,
+        "annotations": []
+      }
+    ],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "Customer",
+    "fqn": "com.example.store.model.Customer",
+    "type": "class",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+    "start_line": 9,
+    "end_line": 34,
+    "annotations": [
+      "@Table",
+      "@Entity",
+      "@Id",
+      "@GeneratedValue"
+    ],
+    "methods": [
+      {
+        "name": "Customer",
+        "fqn": "com.example.store.model.Customer.Customer",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 21,
+        "end_line": 21,
+        "is_constructor": true,
+        "annotations": [],
+        "parameters": [],
+        "return_type": null,
+        "calls": []
+      },
+      {
+        "name": "getId",
+        "fqn": "com.example.store.model.Customer.getId",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 23,
+        "end_line": 23,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "Long",
+        "calls": []
+      },
+      {
+        "name": "setId",
+        "fqn": "com.example.store.model.Customer.setId",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 24,
+        "end_line": 24,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "id"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      },
+      {
+        "name": "getName",
+        "fqn": "com.example.store.model.Customer.getName",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 26,
+        "end_line": 26,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "String",
+        "calls": []
+      },
+      {
+        "name": "setName",
+        "fqn": "com.example.store.model.Customer.setName",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 27,
+        "end_line": 27,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "name"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      },
+      {
+        "name": "getEmail",
+        "fqn": "com.example.store.model.Customer.getEmail",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 29,
+        "end_line": 29,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "String",
+        "calls": []
+      },
+      {
+        "name": "setEmail",
+        "fqn": "com.example.store.model.Customer.setEmail",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 30,
+        "end_line": 30,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "email"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      },
+      {
+        "name": "getPhone",
+        "fqn": "com.example.store.model.Customer.getPhone",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 32,
+        "end_line": 32,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "String",
+        "calls": []
+      },
+      {
+        "name": "setPhone",
+        "fqn": "com.example.store.model.Customer.setPhone",
+        "class_name": "Customer",
+        "class_fqn": "com.example.store.model.Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "start_line": 33,
+        "end_line": 33,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "phone"
+          }
+        ],
+        "return_type": "void",
+        "calls": []
+      }
+    ],
+    "fields": [
+      {
+        "name": "id",
+        "type": "Long",
+        "class_name": "Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "line": 13,
+        "annotations": [
+          "@GeneratedValue"
+        ]
+      },
+      {
+        "name": "name",
+        "type": "String",
+        "class_name": "Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "line": 17,
+        "annotations": []
+      },
+      {
+        "name": "email",
+        "type": "String",
+        "class_name": "Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "line": 18,
+        "annotations": []
+      },
+      {
+        "name": "phone",
+        "type": "String",
+        "class_name": "Customer",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java",
+        "line": 19,
+        "annotations": []
+      }
+    ],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "ProductService",
+    "fqn": "com.example.store.service.ProductService",
+    "type": "class",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+    "start_line": 11,
+    "end_line": 47,
+    "annotations": [
+      "@Service",
+      "@Autowired"
+    ],
+    "methods": [
+      {
+        "name": "ProductService",
+        "fqn": "com.example.store.service.ProductService.ProductService",
+        "class_name": "ProductService",
+        "class_fqn": "com.example.store.service.ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "start_line": 16,
+        "end_line": 19,
+        "is_constructor": true,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "ProductRepository",
+            "name": "productRepository"
+          }
+        ],
+        "return_type": null,
+        "calls": []
+      },
+      {
+        "name": "getAllProducts",
+        "fqn": "com.example.store.service.ProductService.getAllProducts",
+        "class_name": "ProductService",
+        "class_fqn": "com.example.store.service.ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "start_line": 21,
+        "end_line": 23,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "List<Product>",
+        "calls": [
+          "productRepository"
+        ]
+      },
+      {
+        "name": "getProductById",
+        "fqn": "com.example.store.service.ProductService.getProductById",
+        "class_name": "ProductService",
+        "class_fqn": "com.example.store.service.ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "start_line": 25,
+        "end_line": 27,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "id"
+          }
+        ],
+        "return_type": "Optional<Product>",
+        "calls": [
+          "productRepository"
+        ]
+      },
+      {
+        "name": "getProductsByCategory",
+        "fqn": "com.example.store.service.ProductService.getProductsByCategory",
+        "class_name": "ProductService",
+        "class_fqn": "com.example.store.service.ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "start_line": 29,
+        "end_line": 31,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "String",
+            "name": "category"
+          }
+        ],
+        "return_type": "List<Product>",
+        "calls": [
+          "productRepository"
+        ]
+      },
+      {
+        "name": "createProduct",
+        "fqn": "com.example.store.service.ProductService.createProduct",
+        "class_name": "ProductService",
+        "class_fqn": "com.example.store.service.ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "start_line": 33,
+        "end_line": 35,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Product",
+            "name": "product"
+          }
+        ],
+        "return_type": "Product",
+        "calls": [
+          "productRepository"
+        ]
+      },
+      {
+        "name": "updateStock",
+        "fqn": "com.example.store.service.ProductService.updateStock",
+        "class_name": "ProductService",
+        "class_fqn": "com.example.store.service.ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "start_line": 37,
+        "end_line": 42,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "id"
+          },
+          {
+            "type": "int",
+            "name": "quantity"
+          }
+        ],
+        "return_type": "Product",
+        "calls": [
+          "orElse",
+          "productRepository",
+          "p",
+          "p",
+          "productRepository"
+        ]
+      },
+      {
+        "name": "deleteProduct",
+        "fqn": "com.example.store.service.ProductService.deleteProduct",
+        "class_name": "ProductService",
+        "class_fqn": "com.example.store.service.ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "start_line": 44,
+        "end_line": 46,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "id"
+          }
+        ],
+        "return_type": "void",
+        "calls": [
+          "productRepository"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "productRepository",
+        "type": "ProductRepository",
+        "class_name": "ProductService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java",
+        "line": 14,
+        "annotations": []
+      }
+    ],
+    "extends": null,
+    "implements": []
+  },
+  {
+    "name": "CustomerService",
+    "fqn": "com.example.store.service.CustomerService",
+    "type": "class",
+    "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java",
+    "start_line": 11,
+    "end_line": 36,
+    "annotations": [
+      "@Service",
+      "@Autowired"
+    ],
+    "methods": [
+      {
+        "name": "CustomerService",
+        "fqn": "com.example.store.service.CustomerService.CustomerService",
+        "class_name": "CustomerService",
+        "class_fqn": "com.example.store.service.CustomerService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java",
+        "start_line": 16,
+        "end_line": 19,
+        "is_constructor": true,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "CustomerRepository",
+            "name": "customerRepository"
+          }
+        ],
+        "return_type": null,
+        "calls": []
+      },
+      {
+        "name": "getAllCustomers",
+        "fqn": "com.example.store.service.CustomerService.getAllCustomers",
+        "class_name": "CustomerService",
+        "class_fqn": "com.example.store.service.CustomerService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java",
+        "start_line": 21,
+        "end_line": 23,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [],
+        "return_type": "List<Customer>",
+        "calls": [
+          "customerRepository"
+        ]
+      },
+      {
+        "name": "getCustomerById",
+        "fqn": "com.example.store.service.CustomerService.getCustomerById",
+        "class_name": "CustomerService",
+        "class_fqn": "com.example.store.service.CustomerService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java",
+        "start_line": 25,
+        "end_line": 27,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "id"
+          }
+        ],
+        "return_type": "Optional<Customer>",
+        "calls": [
+          "customerRepository"
+        ]
+      },
+      {
+        "name": "registerCustomer",
+        "fqn": "com.example.store.service.CustomerService.registerCustomer",
+        "class_name": "CustomerService",
+        "class_fqn": "com.example.store.service.CustomerService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java",
+        "start_line": 29,
+        "end_line": 31,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Customer",
+            "name": "customer"
+          }
+        ],
+        "return_type": "Customer",
+        "calls": [
+          "customerRepository"
+        ]
+      },
+      {
+        "name": "deleteCustomer",
+        "fqn": "com.example.store.service.CustomerService.deleteCustomer",
+        "class_name": "CustomerService",
+        "class_fqn": "com.example.store.service.CustomerService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java",
+        "start_line": 33,
+        "end_line": 35,
+        "is_constructor": false,
+        "annotations": [],
+        "parameters": [
+          {
+            "type": "Long",
+            "name": "id"
+          }
+        ],
+        "return_type": "void",
+        "calls": [
+          "customerRepository"
+        ]
+      }
+    ],
+    "fields": [
+      {
+        "name": "customerRepository",
+        "type": "CustomerRepository",
+        "class_name": "CustomerService",
+        "file_path": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java",
+        "line": 14,
+        "annotations": []
+      }
+    ],
+    "extends": null,
+    "implements": []
+  }
+]

@@ -4,20 +4,30 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "nix"
-version = "0.1.0"
-description = "AI-powered CLI tool for Spring Boot projects"
+version = "2.0.0"
+description = "Modern AI Assistant & Live Support Platform for Spring Boot projects"
 readme = "README.md"
 requires-python = ">=3.8"
+authors = [
+    { name = "Akshit Mehta" },
+    { name = "Nikhil Saini" }
+]
 dependencies = [
     "requests>=2.31.0",
     "tree-sitter>=0.21.0",
-    "tree-sitter-java>=0.21.0",
-    "chromadb>=0.4.0",
+    "tree-sitter-java>=0.21.0"
 ]
+
+[project.optional-dependencies]
+vectors = ["chromadb>=0.4.0"]
+dev = ["pytest>=7.0.0"]
 
 [project.scripts]
 nix = "main:main"
 
 [tool.setuptools]
 py-modules = ["main", "config"]
-packages = ["commands", "core", "llm", "utils", "storage", "tools", "indexer"]
+packages = ["commands", "core", "llm", "utils", "storage", "tools", "indexer", "app"]
+
+[tool.setuptools.package-data]
+app = ["web/*", "web/**/*"]

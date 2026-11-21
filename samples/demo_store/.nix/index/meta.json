@@ -1,0 +1,18 @@
+{
+  "indexed_at": "2026-11-21T12:18:07.542094",
+  "project_root": "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store",
+  "file_count": 9,
+  "class_count": 9,
+  "method_count": 48,
+  "file_hashes": {
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/DemoStoreApplication.java": "c71a47e3bbb942f0276f7cb04994a3c6",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/repository/CustomerRepository.java": "036fb16c70ef7d4ec8793dd09180b0d8",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/repository/ProductRepository.java": "e1dc4589f18923cd4a4e5c989dea9dea",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/ProductController.java": "67763eb3006c5b13612d02079d0400a3",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/controller/CustomerController.java": "53c89d16230caf4ef3533984fc2a11e8",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Product.java": "d28dc65b7f9801edfa14bcad5463c8b0",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/model/Customer.java": "716a40ee8afd0c7ad3c17ec64d226ac8",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/ProductService.java": "64c51214be26b1d01616642716b9a620",
+    "/Users/akshitmehta/Downloads/sql learning/nix/samples/demo_store/src/main/java/com/example/store/service/CustomerService.java": "4cde65c6be77aea32692a713ec1587b4"
+  }
+}

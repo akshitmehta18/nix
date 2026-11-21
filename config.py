@@ -6,16 +6,68 @@ NIX_FOLDER = ".nix"
 CONFIG_FILE = "config.json"
 GITIGNORE_FILE = ".gitignore"
 INDEX_FOLDER = "index"
+GLOBAL_NIX_DIR = os.path.expanduser("~/.nix")
+GLOBAL_CONFIG_FILE = os.path.join(GLOBAL_NIX_DIR, "config.json")
+
+_CURRENT_PROJECT_ROOT = None
+
+
+def set_project_root(path: str):
+    """Set the active project directory."""
+    global _CURRENT_PROJECT_ROOT
+    if path:
+        abs_path = os.path.abspath(os.path.expanduser(path))
+        _CURRENT_PROJECT_ROOT = abs_path
+        try:
+            os.chdir(abs_path)
+        except Exception:
+            pass
 
 
 def get_project_root():
     """Get current project directory"""
-    return os.getcwd()
+    global _CURRENT_PROJECT_ROOT
+    return _CURRENT_PROJECT_ROOT or os.getcwd()
 
 
 def get_nix_path():
-    """Get full path to .nix folder"""
+    """Get full path to .nix folder in current project"""
     return os.path.join(get_project_root(), NIX_FOLDER)
+
+
+def get_global_nix_path():
+    """Get full path to global ~/.nix directory"""
+    os.makedirs(GLOBAL_NIX_DIR, exist_ok=True)
+    return GLOBAL_NIX_DIR
+
+
+def get_global_config_path():
+    """Get full path to ~/.nix/config.json"""
+    return GLOBAL_CONFIG_FILE
+
+
+def load_global_config():
+    """Load global ~/.nix/config.json as dictionary"""
+    try:
+        path = get_global_config_path()
+        if not os.path.exists(path):
+            return {}
+        with open(path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
+def save_global_config(data: dict):
+    """Save dictionary to global ~/.nix/config.json"""
+    try:
+        get_global_nix_path()
+        path = get_global_config_path()
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+        return True
+    except Exception as e:
+        return False
 
 
 def get_config_path():

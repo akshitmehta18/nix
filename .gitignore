@@ -21,3 +21,4 @@ venv/
 .venv/
 
 AGENTIC_PLAN.md
+cloudflared

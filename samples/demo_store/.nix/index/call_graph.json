@@ -1,0 +1,280 @@
+{
+  "callers": {
+    "?.SpringApplication": [
+      "com.example.store.DemoStoreApplication.main"
+    ],
+    "?.productService": [
+      "com.example.store.controller.ProductController.listProducts",
+      "com.example.store.controller.ProductController.getProduct",
+      "com.example.store.controller.ProductController.byCategory",
+      "com.example.store.controller.ProductController.createProduct",
+      "com.example.store.controller.ProductController.updateStock",
+      "com.example.store.controller.ProductController.deleteProduct"
+    ],
+    "?.orElse": [
+      "com.example.store.controller.ProductController.getProduct",
+      "com.example.store.controller.CustomerController.getById",
+      "com.example.store.service.ProductService.updateStock"
+    ],
+    "?.map": [
+      "com.example.store.controller.ProductController.getProduct",
+      "com.example.store.controller.CustomerController.getById"
+    ],
+    "?.build": [
+      "com.example.store.controller.ProductController.getProduct",
+      "com.example.store.controller.ProductController.deleteProduct",
+      "com.example.store.controller.CustomerController.getById",
+      "com.example.store.controller.CustomerController.remove"
+    ],
+    "?.ResponseEntity": [
+      "com.example.store.controller.ProductController.getProduct",
+      "com.example.store.controller.ProductController.deleteProduct",
+      "com.example.store.controller.CustomerController.getById",
+      "com.example.store.controller.CustomerController.remove"
+    ],
+    "?.customerService": [
+      "com.example.store.controller.CustomerController.getAll",
+      "com.example.store.controller.CustomerController.getById",
+      "com.example.store.controller.CustomerController.register",
+      "com.example.store.controller.CustomerController.remove"
+    ],
+    "?.productRepository": [
+      "com.example.store.service.ProductService.getAllProducts",
+      "com.example.store.service.ProductService.getProductById",
+      "com.example.store.service.ProductService.getProductsByCategory",
+      "com.example.store.service.ProductService.createProduct",
+      "com.example.store.service.ProductService.updateStock",
+      "com.example.store.service.ProductService.deleteProduct"
+    ],
+    "?.p": [
+      "com.example.store.service.ProductService.updateStock"
+    ],
+    "?.customerRepository": [
+      "com.example.store.service.CustomerService.getAllCustomers",
+      "com.example.store.service.CustomerService.getCustomerById",
+      "com.example.store.service.CustomerService.registerCustomer",
+      "com.example.store.service.CustomerService.deleteCustomer"
+    ]
+  },
+  "callees": {
+    "com.example.store.DemoStoreApplication.main": [
+      "?.SpringApplication"
+    ],
+    "com.example.store.controller.ProductController.listProducts": [
+      "?.productService"
+    ],
+    "com.example.store.controller.ProductController.getProduct": [
+      "?.orElse",
+      "?.map",
+      "?.productService",
+      "?.build",
+      "?.ResponseEntity"
+    ],
+    "com.example.store.controller.ProductController.byCategory": [
+      "?.productService"
+    ],
+    "com.example.store.controller.ProductController.createProduct": [
+      "?.productService"
+    ],
+    "com.example.store.controller.ProductController.updateStock": [
+      "?.productService"
+    ],
+    "com.example.store.controller.ProductController.deleteProduct": [
+      "?.productService",
+      "?.build",
+      "?.ResponseEntity"
+    ],
+    "com.example.store.controller.CustomerController.getAll": [
+      "?.customerService"
+    ],
+    "com.example.store.controller.CustomerController.getById": [
+      "?.orElse",
+      "?.map",
+      "?.customerService",
+      "?.build",
+      "?.ResponseEntity"
+    ],
+    "com.example.store.controller.CustomerController.register": [
+      "?.customerService"
+    ],
+    "com.example.store.controller.CustomerController.remove": [
+      "?.customerService",
+      "?.build",
+      "?.ResponseEntity"
+    ],
+    "com.example.store.service.ProductService.getAllProducts": [
+      "?.productRepository"
+    ],
+    "com.example.store.service.ProductService.getProductById": [
+      "?.productRepository"
+    ],
+    "com.example.store.service.ProductService.getProductsByCategory": [
+      "?.productRepository"
+    ],
+    "com.example.store.service.ProductService.createProduct": [
+      "?.productRepository"
+    ],
+    "com.example.store.service.ProductService.updateStock": [
+      "?.orElse",
+      "?.productRepository",
+      "?.p"
+    ],
+    "com.example.store.service.ProductService.deleteProduct": [
+      "?.productRepository"
+    ],
+    "com.example.store.service.CustomerService.getAllCustomers": [
+      "?.customerRepository"
+    ],
+    "com.example.store.service.CustomerService.getCustomerById": [
+      "?.customerRepository"
+    ],
+    "com.example.store.service.CustomerService.registerCustomer": [
+      "?.customerRepository"
+    ],
+    "com.example.store.service.CustomerService.deleteCustomer": [
+      "?.customerRepository"
+    ]
+  },
+  "edges": [
+    {
+      "caller": "com.example.store.DemoStoreApplication.main",
+      "callee": "?.SpringApplication"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.listProducts",
+      "callee": "?.productService"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.getProduct",
+      "callee": "?.orElse"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.getProduct",
+      "callee": "?.map"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.getProduct",
+      "callee": "?.productService"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.getProduct",
+      "callee": "?.build"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.getProduct",
+      "callee": "?.ResponseEntity"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.byCategory",
+      "callee": "?.productService"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.createProduct",
+      "callee": "?.productService"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.updateStock",
+      "callee": "?.productService"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.deleteProduct",
+      "callee": "?.productService"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.deleteProduct",
+      "callee": "?.build"
+    },
+    {
+      "caller": "com.example.store.controller.ProductController.deleteProduct",
+      "callee": "?.ResponseEntity"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.getAll",
+      "callee": "?.customerService"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.getById",
+      "callee": "?.orElse"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.getById",
+      "callee": "?.map"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.getById",
+      "callee": "?.customerService"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.getById",
+      "callee": "?.build"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.getById",
+      "callee": "?.ResponseEntity"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.register",
+      "callee": "?.customerService"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.remove",
+      "callee": "?.customerService"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.remove",
+      "callee": "?.build"
+    },
+    {
+      "caller": "com.example.store.controller.CustomerController.remove",
+      "callee": "?.ResponseEntity"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.getAllProducts",
+      "callee": "?.productRepository"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.getProductById",
+      "callee": "?.productRepository"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.getProductsByCategory",
+      "callee": "?.productRepository"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.createProduct",
+      "callee": "?.productRepository"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.updateStock",
+      "callee": "?.orElse"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.updateStock",
+      "callee": "?.productRepository"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.updateStock",
+      "callee": "?.p"
+    },
+    {
+      "caller": "com.example.store.service.ProductService.deleteProduct",
+      "callee": "?.productRepository"
+    },
+    {
+      "caller": "com.example.store.service.CustomerService.getAllCustomers",
+      "callee": "?.customerRepository"
+    },
+    {
+      "caller": "com.example.store.service.CustomerService.getCustomerById",
+      "callee": "?.customerRepository"
+    },
+    {
+      "caller": "com.example.store.service.CustomerService.registerCustomer",
+      "callee": "?.customerRepository"
+    },
+    {
+      "caller": "com.example.store.service.CustomerService.deleteCustomer",
+      "callee": "?.customerRepository"
+    }
+  ]
+}
